@@ -16,9 +16,10 @@ export const getPokemons = async (page: number, limit: number = 20): Promise<Pok
     const pokeApiPokemons = await Promise.all(pokemonPromises);
     const pokemons = pokeApiPokemons.map( (pokemon) => PokemonMapper.pokeApiPokemonToEntity(pokemon.data) );
 
-    console.log({data});
+    console.log(pokemons[0]);
 
     return pokemons;
+
   } catch(error) {
     console.log(error);
     throw new Error('Error getting pokemons');

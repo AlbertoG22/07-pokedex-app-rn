@@ -6,10 +6,13 @@ import { PokeballBg } from '../../components/ui/PokeballBg';
 import { globalTheme } from '../../../config/theme/global-theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PokemonCard } from '../../components/pokemons/PokemonCard';
+import { useContext } from 'react';
+import { ThemeContext } from '../../context/ThemeContext';
 
 export const HomeScreen = () => {
 
   const { top } = useSafeAreaInsets();
+  const { isDark } = useContext(ThemeContext);
 
   //* FORMA BÁSICA DE UNA PETICIÓN HTTP
   // const { isLoading, data: pokemons = [] } = useQuery({
@@ -37,7 +40,7 @@ export const HomeScreen = () => {
         numColumns={ 2 }
         style={{ paddingTop: top + 20 }}
         ListHeaderComponent={ () => (
-          <Text variant='displayMedium'>Pokédex</Text>
+          <Text style={{ color: isDark ? 'white' : 'black' }} variant='displayMedium'>Pokédex</Text>
         )}
         renderItem={ ({item}) => <PokemonCard pokemon={ item } />}
         onEndReachedThreshold={ 0.6 }

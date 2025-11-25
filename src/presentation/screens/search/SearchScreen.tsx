@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { globalTheme } from '../../../config/theme/global-theme';
@@ -10,11 +10,28 @@ import { getPokemonNamesWithId } from '../../../actions/pokemons';
 
 export const SearchScreen = () => {
   const { top } = useSafeAreaInsets();
+  const [term, setTerm] = useState('');
 
   const { isLoading, data: pokemonNameList = [] } = useQuery({
     queryKey: ['pokemons', 'all'],
     queryFn: () => getPokemonNamesWithId(),
   });
+
+  const pokemonNameIdList = useMemo( () => {
+    // es número
+    if( !isNaN(Number(term)) ) {
+      const pokemon = pokemonNameList.find( pokemon => pokemon.id === Number(term) );
+      return pokemon ? [pokemon] : [];
+    }
+
+    if( term.length === 0 ) return [];
+    if( term.length < 3 ) return [];
+
+    return pokemonNameList.filter( pokemon => 
+      pokemon.name.includes(term.toLocaleLowerCase()),
+    );
+
+  }, []);
 
   return (
     <View style={[ globalTheme.globalMargin, { paddingTop: top + 10 } ]}>
@@ -23,11 +40,13 @@ export const SearchScreen = () => {
         mode='flat'
         autoFocus
         autoCorrect={false}
-        onChangeText={ value => console.log(value) }
-        value='Holaaaa'
+        onChangeText={ setTerm }
+        value={ term }
       />
 
       <ActivityIndicator style={{ paddingTop: 20 }} />
+
+      <Text style={{color: 'white'}}>{JSON.stringify(pokemonNameIdList, null, 2)}</Text>
 
       <FlatList
         data={[] as Pokemon[]}
